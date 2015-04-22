@@ -3,13 +3,15 @@ using System.Collections;
 
 public class PlayerAIBehaviour : MovementBehaviour 
 {
+	public Vector3 _goalPosition;
+
 	void Start () 
 	{
-		FindPath(_goal);
+		base.Start();
 	}
 
 	void Update () 
 	{
-		
+		base.Update();
 	}
 }

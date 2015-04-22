@@ -4,21 +4,28 @@ using System.Collections;
 public class MovementBehaviour : MonoBehaviour 
 {
 	protected NavMeshAgent _agent;
-	protected Vector3 _goal;
+	public Vector3 _goal;
+	private Vector3 _lastGoal;
 	
-	void Start () 
+	protected virtual void Start () 
 	{
 		_agent 	= GetComponent<NavMeshAgent>();
+		FindPath();
 	}
 
-	void Update () 
+	protected virtual void Update () 
 	{
-
+		if (_lastGoal != _goal)
+		{
+			FindPath();
+		}
 	}
 
-	protected void FindPath(Vector3 a_goal)
+	private void FindPath()
 	{
-		_agent.destination 	=	a_goal;
-		_goal 				= a_goal;
+		_agent.destination 	= _goal;
+		_lastGoal 			= _goal;
+
+		Debug.Log("Finding new path...");
 	}
 }
