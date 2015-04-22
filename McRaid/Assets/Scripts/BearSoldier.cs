@@ -28,20 +28,20 @@ public class BearSoldier : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Input.GetMouseButton(0))
-		{
-			RaycastHit hit;
-			Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
-			
-			if (Physics.Raycast(ray, out hit))
-			{
-				Debug.Log("Hit: " + hit.transform.name);
-				if (hit.transform.name == "Ground")
-				{
-					Debug.DrawLine(Camera.main.transform.position, hit.point);
-				}
-			}                   
-		}
+		//if (Input.GetMouseButton(0))
+		//{
+		//	RaycastHit hit;
+		//	Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
+		//	
+		//	if (Physics.Raycast(ray, out hit))
+		//	{
+		//		Debug.Log("Hit: " + hit.transform.name);
+		//		if (hit.transform.name == "Ground")
+		//		{
+		//			Debug.DrawLine(Camera.main.transform.position, hit.point);
+		//		}
+		//	}                   
+		//}
 	}
 
 	void DamageEnemy(/*enemy*/)
