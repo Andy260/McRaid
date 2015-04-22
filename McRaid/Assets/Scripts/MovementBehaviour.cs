@@ -10,21 +10,22 @@ public class MovementBehaviour : MonoBehaviour
 	protected virtual void Start () 
 	{
 		_agent 	= GetComponent<NavMeshAgent>();
-		FindPath();
+		FindPath(_goal);
 	}
 
 	protected virtual void Update () 
 	{
 		if (_lastGoal != _goal)
 		{
-			FindPath();
+			FindPath(_goal);
 		}
 	}
 
-	private void FindPath()
+	protected void FindPath(Vector3 a_position)
 	{
-		_agent.destination 	= _goal;
-		_lastGoal 			= _goal;
+		_goal = a_position;
+		_agent.SetDestination(a_position);
+		_lastGoal = _goal;
 
 		Debug.Log("Finding new path...");
 	}
