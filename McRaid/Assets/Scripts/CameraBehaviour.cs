@@ -23,30 +23,30 @@ public class CameraBehaviour : MonoBehaviour
 	void HandleTranslation()
 	{
 		Vector3 mousePos = Input.mousePosition;
-		Vector3 newCameraPos = new Vector3();
+		Vector3 cameraDir = new Vector3 ();
 		
 		// Move camera on X axis
 		if (mousePos.x < _screenBoundery) 
 		{
-			newCameraPos.x -= _speed * Time.deltaTime;
+			cameraDir.x -= 1;
 		}
 		else if (mousePos.x > Screen.width - _screenBoundery)
 		{
-			newCameraPos.x += _speed * Time.deltaTime;
+			cameraDir.x += 1;
 		}
 		
 		// Move camera on Z axis
 		if (mousePos.y < _screenBoundery)
 		{
-			newCameraPos.z -= _speed * Time.deltaTime;
+			cameraDir.z -= 1;
 		}
 		else if (mousePos.y > Screen.height - _screenBoundery)
 		{
-			newCameraPos.z += _speed * Time.deltaTime;
+			cameraDir.z += 1;
 		}
 		
 		// Apply transform
-		_rootNode.transform.Translate(newCameraPos);
+		_rootNode.transform.Translate(cameraDir * (_speed * Time.deltaTime));
 	}
 
 	void HandleRotation()
