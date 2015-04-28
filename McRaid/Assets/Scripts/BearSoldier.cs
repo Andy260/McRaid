@@ -17,8 +17,6 @@ public class BearSoldier : MonoBehaviour
 	public float _sightRange;
 
 
-
-
 	// Use this for initialization
 	void Start () 
 	{

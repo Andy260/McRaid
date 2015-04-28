@@ -14,12 +14,17 @@ public class EnemyAIBehaviour : BearSoldier {
 	public bool _targetInRange;
 	public bool _active;
 	public bool _hasTarget;
-	public List<BearSoldier> _playerSquad;
+	public List<GameObject> _playerSquad;
+
+	public float _weaponRange;
 
 	// Use this for initialization
 	void Start () 
 	{
-		_currentPosition = GetComponent<Transform>;
+		_active = true;
+		_agent 	= GetComponent<NavMeshAgent>();
+		//_currentPosition = GetComponent<transform.position>();
+		//_currentPosition = Vector3(0,0,0);
 		_target = null;
 
 		_targetInSight = false;
@@ -33,42 +38,76 @@ public class EnemyAIBehaviour : BearSoldier {
 		//behaviour checks
 		if (_active) 
 		{
-			FindTarget ();
+			//check for target
 			if(_hasTarget)
 			{
-
+				//compare targets postion against weapon range and sight range
+				TrackTargetPosition();
+				//check for range
+				if(_targetInRange)
+				{
+					Shoot ();
+				}
+				//if not in range, move to range
+				else
+				{
+					MoveToRange ();
+				}
 			}
 			else
 			{
-				//stay active, wait (unlikely event)
-				IdlePatrol();
+				FindTarget ();
 			}
 		}
 	}
 
-	void CheckForLoS(GameObject target)
+	bool CheckForLoS(GameObject target)
 	{
 		//get direction/distance from soldier to target
 		Vector3 _direction = (target.transform.position - _currentPosition).normalized;
-		Vector3 _distanceFromTarget = target.transform.position - _currentPosition;
+		float _distanceFromTarget = Vector3.Distance (target.transform.position, _currentPosition);
 
 		if (_distanceFromTarget <= _sightRange) 
 		{
-			//check if has direct line to target, needs to cast for walls
+			//check if has direct line to target, needs to cast for walls, not low cover(or anything else that can be seen past)
 			if (Physics.Raycast (_currentPosition, _direction, _distanceFromTarget)) 
 			{
+				Debug.DrawRay(_currentPosition, _direction, Color.red);
 				_targetInSight = false;
-			} else 
+				return false;
+			} 
+			else 
+			{
 				_targetInSight = true;
+				return true;
+			}
 		} 
 		else
+		{
 			_targetInSight = false;
+			return false;
+		}
 	}
 
 	void FindTarget()
 	{
+		float _lowestDistance = Mathf.Infinity;
 		//loop through player soldiers, check for LOS;
 		//if LOS found, find nearest, set nearest as target;
+		for (int i = 0; i < _playerSquad.Count; i++) 
+		{
+			CheckForLoS (_playerSquad [i]);
+			if (_targetInSight) 
+			{
+				float _distanceFromTarget = Vector3.Distance(_playerSquad [i].transform.position, _currentPosition);
+				if (_distanceFromTarget < _lowestDistance) 
+				{
+					_lowestDistance = _distanceFromTarget;
+					_target = _playerSquad [i];
+					_hasTarget = true;
+				}
+			}
+		}
 	}
 
 	void Shoot()
@@ -76,9 +115,18 @@ public class EnemyAIBehaviour : BearSoldier {
 
 	}
 
+	void MoveToRange()
+	{
+		//Vector3 _distanceFromTarget = _target.transform.position - _currentPosition;
+		//Vector3 _positionInRange = _distanceFromTarget - _weaponRange;
+
+
+		//FindPath(_positionInRange);
+	}
+
 	void Seek()
 	{
-
+		//FindPath(_targetLastPosition);
 	}
 
 	void IdlePatrol()
@@ -88,7 +136,27 @@ public class EnemyAIBehaviour : BearSoldier {
 
 	void TrackTargetPosition()
 	{
-		if(_targetInSight)
-			_targetLastPosition = _target.transform.position;
+		//update targets info with position
+		_targetLastPosition = _target.transform.position;
+		float _distanceToTarget = Vector3.Distance (_targetLastPosition, _currentPosition);
+
+		//if target gets out of LOS, target is lost
+		if(_distanceToTarget > _sightRange)
+		{
+			_hasTarget = false;
+		}
+		else if(!CheckForLoS(_target))
+		{
+			_hasTarget = false;
+		}
+
+		if(_distanceToTarget <= _weaponRange)
+		{
+			_targetInRange = true;
+		}
+		else
+			_targetInRange = false;
+
+
 	}
 }
