@@ -4,7 +4,8 @@ using System.Collections;
 public class BearSoldier : MonoBehaviour 
 {
 	//base stats;
-	public float _health;
+    public float _maxHealth;
+	public float _currentHealth;
 	public float _speed;
 	public float _evasion;
 	public float _armour;

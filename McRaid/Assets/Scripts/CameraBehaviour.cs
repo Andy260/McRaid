@@ -1,52 +1,79 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class CameraBehaviour : MonoBehaviour 
 {
-	//public Camera _camera;
-	public GameObject _rootNode;
+    GUISystem _guiSystem;
+
 	public float _speed;
 	public float _rotationSpeed;
-	public int _screenBoundery;
+    public float _screenBoundery;
 	
 	void Start () 
 	{
+        GameObject guiGameObject = GameObject.Find("GUI System");
+        _guiSystem = guiGameObject.GetComponent<GUISystem>();
 
+#if UNITY_EDITOR
+        if (_screenBoundery <= 0)
+        {
+            Debug.LogError("Camera screen boundery not greater than 0");
+        }
+
+        if (_speed <= 0)
+        {
+            Debug.LogError("Camera speed not greater than 0");
+        }
+
+        if (_rotationSpeed <= 0)
+        {
+            Debug.LogError("Rotation speed not greater than 0");
+        }
+#endif
 	}
 
 	void Update () 
 	{
-		HandleTranslation();
-		HandleRotation();
+        if (!_guiSystem.isSelecting)
+        {
+            HandleTranslation();
+            HandleRotation();
+        }
 	}
 
 	void HandleTranslation()
 	{
-		Vector3 mousePos = Input.mousePosition;
-		Vector3 cameraDir = new Vector3 ();
+		Vector3 mousePos    = Input.mousePosition;
+		Vector3 cameraDir   = new Vector3 ();
 		
 		// Move camera on X axis
-		if (mousePos.x < _screenBoundery) 
+		if (mousePos.x < _screenBoundery && 
+            mousePos.x > 0) 
 		{
 			cameraDir.x -= 1;
 		}
-		else if (mousePos.x > Screen.width - _screenBoundery)
+		else if (mousePos.x > Screen.width - _screenBoundery &&
+                 mousePos.x < Screen.width)
 		{
 			cameraDir.x += 1;
 		}
 		
 		// Move camera on Z axis
-		if (mousePos.y < _screenBoundery)
+		if (mousePos.y < _screenBoundery &&
+            mousePos.y > 0)
 		{
 			cameraDir.z -= 1;
 		}
-		else if (mousePos.y > Screen.height - _screenBoundery)
+		else if (mousePos.y > Screen.height - _screenBoundery &&
+                 mousePos.y < Screen.height)
 		{
 			cameraDir.z += 1;
 		}
 		
 		// Apply transform
-		_rootNode.transform.Translate(cameraDir * (_speed * Time.deltaTime));
+		transform.parent.Translate(
+            cameraDir * (_speed * Time.deltaTime));
 	}
 
 	void HandleRotation()
@@ -54,12 +81,14 @@ public class CameraBehaviour : MonoBehaviour
 		// Rotate camera anti-clockwise
 		if (Input.GetKey(KeyCode.Q))
 		{
-			_rootNode.transform.Rotate(new Vector3(0, -_rotationSpeed * Time.deltaTime, 0));
+            transform.parent.Rotate(
+                new Vector3(0, -_rotationSpeed * Time.deltaTime, 0));
 		}
 		// Rotate camera clockwise
 		else if (Input.GetKey(KeyCode.E))
 		{
-			_rootNode.transform.Rotate(new Vector3(0, _rotationSpeed * Time.deltaTime, 0));
+            transform.parent.Rotate(
+                new Vector3(0, _rotationSpeed * Time.deltaTime, 0));
 		}
 
 	}
