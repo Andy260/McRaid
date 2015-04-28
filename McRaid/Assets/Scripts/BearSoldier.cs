@@ -17,6 +17,12 @@ public class BearSoldier : MonoBehaviour
 	//range stats
 	public float _sightRange;
 
+	//gun stats
+	public float _weaponRange;
+	public float _weaponAmmo;
+	public float _weaponDamage;
+	public float _weaponReloadTime;
+
 
 	// Use this for initialization
 	void Start () 
