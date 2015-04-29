@@ -170,4 +170,9 @@ public class EnemyAIBehaviour : BearSoldier {
 
 
 	}
+
+    public void SetTarget(bool hastarget)
+    {
+        _hasTarget = hastarget;
+    }
 }
