@@ -49,24 +49,28 @@ public class CameraBehaviour : MonoBehaviour
 		
 		// Move camera on X axis
 		if (mousePos.x < _screenBoundery && 
-            mousePos.x > 0) 
+            mousePos.x > 0 ||
+            Input.GetKey(KeyCode.A)) 
 		{
 			cameraDir.x -= 1;
 		}
 		else if (mousePos.x > Screen.width - _screenBoundery &&
-                 mousePos.x < Screen.width)
+                 mousePos.x < Screen.width ||
+                 Input.GetKey(KeyCode.D))
 		{
 			cameraDir.x += 1;
 		}
 		
 		// Move camera on Z axis
 		if (mousePos.y < _screenBoundery &&
-            mousePos.y > 0)
+            mousePos.y > 0 ||
+            Input.GetKey(KeyCode.S))
 		{
 			cameraDir.z -= 1;
 		}
 		else if (mousePos.y > Screen.height - _screenBoundery &&
-                 mousePos.y < Screen.height)
+                 mousePos.y < Screen.height ||
+                 Input.GetKey(KeyCode.W))
 		{
 			cameraDir.z += 1;
 		}
