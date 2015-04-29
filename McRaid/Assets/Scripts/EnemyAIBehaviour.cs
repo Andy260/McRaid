@@ -74,10 +74,10 @@ public class EnemyAIBehaviour : BearSoldier {
 
 		if (_distanceFromTarget <= _sightRange) 
 		{
+            Debug.DrawRay(transform.position, _direction, Color.green, 1);
 			//check if has direct line to target, needs to cast for walls, not low cover(or anything else that can be seen past)
 			if (Physics.Raycast (transform.position, _direction, _distanceFromTarget, 8)) 
 			{
-				Debug.DrawRay(transform.position, _direction, Color.red, 5);
 				_targetInSight = false;
 				return false;
 			} 
@@ -120,13 +120,13 @@ public class EnemyAIBehaviour : BearSoldier {
 	{;
 		_targetPlayer = _target;
 		Vector3 _direction = (_target.transform.position - transform.position).normalized;
-		Debug.DrawRay (transform.position, _direction, Color.red, 1);
+		Debug.DrawRay (transform.position, _direction, Color.red, 0.1f);
 		ShootEnemy ();
 	}
 
 	void MoveToRange()
 	{
-		float _distanceFromTarget = Vector3.Distance (_target.transform.position, transform.position);
+        float _distanceFromTarget = Vector3.Distance(transform.position, _target.transform.position);
 
 		if(_distanceFromTarget > _weaponRange)
 		{
@@ -163,6 +163,7 @@ public class EnemyAIBehaviour : BearSoldier {
 		if(_distanceToTarget <= _weaponRange)
 		{
 			_targetInRange = true;
+            Move(transform.position);
 		}
 		else
 			_targetInRange = false;

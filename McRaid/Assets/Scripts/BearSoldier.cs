@@ -76,6 +76,8 @@ public class BearSoldier : MonoBehaviour
 		if(_reloadTimer <= 0)
 		{
 			_reloadTimer = _weaponReloadTime;
+            _reloading = false;
+            _ammoRemaining = _weaponAmmo;
 		}
 	}
 
