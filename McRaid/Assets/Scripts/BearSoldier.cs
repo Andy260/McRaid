@@ -35,7 +35,6 @@ public class BearSoldier : MonoBehaviour
 	public BearSoldier _targetPlayer;
 
     NavMeshAgent _navAgent;
-    BearSoldier _target;
     Vector3 _destination;
 
 	// Use this for initialization
