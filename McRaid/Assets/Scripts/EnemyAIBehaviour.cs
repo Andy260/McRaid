@@ -5,8 +5,7 @@ using System.Collections.Generic;
 public class EnemyAIBehaviour : BearSoldier {
 	 
 	public NavMeshAgent _agent;
-	public Vector3 _currentPosition;
-	public GameObject _target;
+	public BearSoldier _target;
 
 	public Vector3 _targetLastPosition;
 
@@ -14,29 +13,33 @@ public class EnemyAIBehaviour : BearSoldier {
 	public bool _targetInRange;
 	public bool _active;
 	public bool _hasTarget;
-	public List<GameObject> _playerSquad;
-
-	public float _weaponRange;
+	public List<BearSoldier> _playerSquad;
 
 	// Use this for initialization
-	void Start () 
+	protected override void Start () 
 	{
-		_active = true;
+		GameObject[] _playerSquadArray = GameObject.FindGameObjectsWithTag("Player");
+        for (uint i = 0; i < _playerSquadArray.Length; ++i)
+		{
+            BearSoldier soldier = _playerSquadArray[i].gameObject.GetComponent<BearSoldier>();
+			
+			_playerSquad.Add(soldier);
+		}
+
 		_agent 	= GetComponent<NavMeshAgent>();
-		//_currentPosition = GetComponent<transform.position>();
-		//_currentPosition = Vector3(0,0,0);
-		_target = null;
 
 		_targetInSight = false;
 		_targetInRange = false;
-		_active = false;
+		_active = true;
+
+		base.Start ();
 	}
 
 	// Update is called once per frame
-	void Update () 
+	protected override void Update () 
 	{
 		//behaviour checks
-		if (_active) 
+		if (_active)
 		{
 			//check for target
 			if(_hasTarget)
@@ -59,20 +62,22 @@ public class EnemyAIBehaviour : BearSoldier {
 				FindTarget ();
 			}
 		}
+
+		base.Update ();
 	}
 
-	bool CheckForLoS(GameObject target)
+	bool CheckForLoS(BearSoldier target)
 	{
 		//get direction/distance from soldier to target
-		Vector3 _direction = (target.transform.position - _currentPosition).normalized;
-		float _distanceFromTarget = Vector3.Distance (target.transform.position, _currentPosition);
+		Vector3 _direction = (target.transform.position - transform.position);
+		float _distanceFromTarget = Vector3.Distance (target.transform.position, transform.position);
 
 		if (_distanceFromTarget <= _sightRange) 
 		{
 			//check if has direct line to target, needs to cast for walls, not low cover(or anything else that can be seen past)
-			if (Physics.Raycast (_currentPosition, _direction, _distanceFromTarget)) 
+			if (Physics.Raycast (transform.position, _direction, _distanceFromTarget, 8)) 
 			{
-				Debug.DrawRay(_currentPosition, _direction, Color.red);
+				Debug.DrawRay(transform.position, _direction, Color.red, 5);
 				_targetInSight = false;
 				return false;
 			} 
@@ -99,7 +104,8 @@ public class EnemyAIBehaviour : BearSoldier {
 			CheckForLoS (_playerSquad [i]);
 			if (_targetInSight) 
 			{
-				float _distanceFromTarget = Vector3.Distance(_playerSquad [i].transform.position, _currentPosition);
+				float _distanceFromTarget = Vector3.Distance(_playerSquad [i].transform.position, transform.position);
+
 				if (_distanceFromTarget < _lowestDistance) 
 				{
 					_lowestDistance = _distanceFromTarget;
@@ -111,34 +117,38 @@ public class EnemyAIBehaviour : BearSoldier {
 	}
 
 	void Shoot()
-	{
-
+	{;
+		_targetPlayer = _target;
+		Vector3 _direction = (_target.transform.position - transform.position).normalized;
+		Debug.DrawRay (transform.position, _direction, Color.red, 1);
+		ShootEnemy ();
 	}
 
 	void MoveToRange()
 	{
-		//Vector3 _distanceFromTarget = _target.transform.position - _currentPosition;
-		//Vector3 _positionInRange = _distanceFromTarget - _weaponRange;
+		float _distanceFromTarget = Vector3.Distance (_target.transform.position, transform.position);
 
-
-		//FindPath(_positionInRange);
+		if(_distanceFromTarget > _weaponRange)
+		{
+            Move(_target.transform.position);
+		}
 	}
 
 	void Seek()
 	{
-		//FindPath(_targetLastPosition);
+        Move(_targetLastPosition);
 	}
 
-	void IdlePatrol()
+	void MakeActive (bool activeOrNot)
 	{
-
+		_active = activeOrNot;
 	}
 
 	void TrackTargetPosition()
 	{
 		//update targets info with position
 		_targetLastPosition = _target.transform.position;
-		float _distanceToTarget = Vector3.Distance (_targetLastPosition, _currentPosition);
+		float _distanceToTarget = Vector3.Distance (_targetLastPosition, transform.position);
 
 		//if target gets out of LOS, target is lost
 		if(_distanceToTarget > _sightRange)

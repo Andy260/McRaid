@@ -12,40 +12,76 @@ public class BearSoldier : MonoBehaviour
 	public float _accuracy;
 	public float _crits;
 	public float _ammoRemaining;
-	public float _reloadTimer;
 
 	//range stats
 	public float _sightRange;
+
+
+	//firing/reloading stats
+	public float _reloadTimer;
+	public float _weaponReloadTime;
+	public bool _reloading;
+
+	public float _weaponFireRate;
+	public float _weaponFireRateTimer;
+	public bool _weaponReady;
+
 
 	//gun stats
 	public float _weaponRange;
 	public float _weaponAmmo;
 	public float _weaponDamage;
-	public float _weaponReloadTime;
+
+	public BearSoldier _targetPlayer;
 
     NavMeshAgent _navAgent;
     BearSoldier _target;
     Vector3 _destination;
 
 	// Use this for initialization
-	protected void Start() 
+	protected virtual void Start() 
 	{
-		//_ammoRemaining = gun._ammoCapacity
-
         _navAgent = GetComponent<NavMeshAgent>();
         _navAgent.speed = _speed;
+
+		_ammoRemaining = _weaponAmmo;
+		_reloadTimer = _weaponReloadTime;
+		_weaponFireRateTimer = _weaponFireRate;
+		
+		_reloading = false;
+		_weaponReady = true;
 	}
 	
 	// Update is called once per frame
-	protected void Update() 
+	protected virtual void Update() 
 	{
         Debug.DrawLine(transform.position, _destination);
+
+		if(!_weaponReady)
+		{
+			_weaponFireRateTimer -= Time.deltaTime;
+		}
+		if(_weaponFireRateTimer <= 0)
+		{
+			_weaponReady = true;
+			_weaponFireRateTimer = _weaponFireRate;
+		}
+		
+		
+		//control reloading and timer
+		if(_reloading)
+		{
+			_reloadTimer -= Time.deltaTime;
+		}
+		if(_reloadTimer <= 0)
+		{
+			_reloadTimer = _weaponReloadTime;
+		}
 	}
 
-	protected void DamageEnemy(/*enemy*/)
+	void DamageEnemy()
 	{
-		//open to change by design
-		//enemy._health -= weapon._damage - enemy._armour;
+		_targetPlayer._currentHealth -= _weaponDamage;
 	}
 
 	public void Move(Vector3 a_position)
@@ -54,36 +90,21 @@ public class BearSoldier : MonoBehaviour
         _destination = a_position;
 	}
 
-	public void ShootEnemy(/*enemy*/)
+	protected void ShootEnemy(/*enemy*/)
 	{
-		//if enemy in range && reloading != true
-
-		//when fireRate allows
-
-			//fire weapon at enemy --->fire weapon animation, bullet effects, etc
-			//reduce _ammoRemaining count
-			
-		//open to change by design
-			
-			//roll against accuracy - enemy._evasion
-				//if succeed DamageEnemy()
-			//else miss
-
-			//if _ammoRemaining == 0
-			//reload
-
-		//else noFire
-	}
-
-	protected void Reload(/*gun*/)
-	{
-		//reloading == 1
-
-		//reloadTimer == gun._reloadTime
-		//reloadTimer -= dt
-
-		//when reloadTimer == 0
-		//_ammoRemaining == gun._ammoCapacity
-		//reloading == 0
+		if(!_reloading)
+		{
+			if(_weaponReady)
+			{
+				_ammoRemaining -= 1;
+				DamageEnemy ();
+				_weaponReady = false;
+				
+				if(_ammoRemaining <= 0)
+				{
+					_reloading = true;
+				}
+			}
+		}
 	}
 }
