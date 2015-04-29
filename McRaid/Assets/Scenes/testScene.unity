@@ -2435,7 +2435,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d322becdbddefeb4e90cc368ada0c416, type: 2}
   m_IsPrefabParent: 0
---- !u!4 &1754888584 stripped
+--- !u!4 &1754888584
 Transform:
   m_PrefabParentObject: {fileID: 411190, guid: d322becdbddefeb4e90cc368ada0c416, type: 2}
   m_PrefabInternal: {fileID: 1754888583}
