@@ -61,6 +61,12 @@ public class GUISystem : MonoBehaviour
 
 	void Update() 
 	{
+        if (_selectedUnits.Count > 0 &&
+            Input.GetMouseButtonDown(1))
+        {
+            MoveUnits();
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             _isSelecting = true;
@@ -150,4 +156,20 @@ public class GUISystem : MonoBehaviour
             }
         }
 	}
+
+    void MoveUnits()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        Physics.Raycast(ray, out hit, Mathf.Infinity);
+
+        Vector3 mouseWorldPos = hit.point;
+
+        for (int i = 0; i < _selectedUnits.Count; ++i)
+        {
+            _selectedUnits[i].Move(mouseWorldPos);
+        }
+
+        Debug.Log("MouseToWorld: " + mouseWorldPos.ToString());
+    }
 }

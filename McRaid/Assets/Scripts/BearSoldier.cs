@@ -23,44 +23,38 @@ public class BearSoldier : MonoBehaviour
 	public float _weaponDamage;
 	public float _weaponReloadTime;
 
+    NavMeshAgent _navAgent;
+    BearSoldier _target;
+    Vector3 _destination;
 
 	// Use this for initialization
-	void Start () 
+	protected void Start() 
 	{
 		//_ammoRemaining = gun._ammoCapacity
+
+        _navAgent = GetComponent<NavMeshAgent>();
+        _navAgent.speed = _speed;
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	protected void Update() 
 	{
-		//if (Input.GetMouseButton(0))
-		//{
-		//	RaycastHit hit;
-		//	Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
-		//	
-		//	if (Physics.Raycast(ray, out hit))
-		//	{
-		//		Debug.Log("Hit: " + hit.transform.name);
-		//		if (hit.transform.name == "Ground")
-		//		{
-		//			Debug.DrawLine(Camera.main.transform.position, hit.point);
-		//		}
-		//	}                   
-		//}
+        Debug.DrawLine(transform.position, _destination);
 	}
 
-	void DamageEnemy(/*enemy*/)
+	protected void DamageEnemy(/*enemy*/)
 	{
 		//open to change by design
 		//enemy._health -= weapon._damage - enemy._armour;
 	}
 
-	void Move(Vector3 movePosition)
+	public void Move(Vector3 a_position)
 	{
-
+        _navAgent.SetDestination(a_position);
+        _destination = a_position;
 	}
 
-	void ShootEnemy(/*enemy*/)
+	public void ShootEnemy(/*enemy*/)
 	{
 		//if enemy in range && reloading != true
 
@@ -81,7 +75,7 @@ public class BearSoldier : MonoBehaviour
 		//else noFire
 	}
 
-	void Reload(/*gun*/)
+	protected void Reload(/*gun*/)
 	{
 		//reloading == 1
 
@@ -92,5 +86,4 @@ public class BearSoldier : MonoBehaviour
 		//_ammoRemaining == gun._ammoCapacity
 		//reloading == 0
 	}
-
 }
